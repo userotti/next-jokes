@@ -3,22 +3,22 @@ import { useState, useCallback } from 'react';
 export default ()=> {
     const [state, setState] = useState({
         loading: false,
-        categories: null,
+        randomJoke: null,
         error: null
     })
     
-    const fetchCategories = useCallback(() => {
+    const fetchRandomJoke = useCallback((category) => {
+        const params = category ? `?category=${category}` : '';
         setState({
             ...state,
             loading: true,
-            categories: state.categories,
             error: null
         })
-        return fetch('api/categories').then((response)=>{
+        return fetch(`/api/randomJoke${params}`).then((response)=>{
             if (response.status !== 200){
                 return response.json().then((error)=>{
                     setState({
-                        ...state,
+                        randomJoke: null,
                         loading: false,
                         error: error.message
                     })
@@ -26,9 +26,8 @@ export default ()=> {
             }
             return response.json().then((data)=>{
                 setState({
-                    ...state,
                     loading: false,
-                    categories: data,
+                    randomJoke: data,
                     error: null
                 })
             })
@@ -36,8 +35,8 @@ export default ()=> {
     })
 
     return {
-        fetchCategories,
-        categories: state.categories,
+        fetchRandomJoke,
+        randomJoke: state.randomJoke,
         loading: state.loading,
         error: state.error
     } 
