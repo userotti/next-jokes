@@ -1,10 +1,11 @@
+import axios from 'axios';
 import { useState, useCallback } from 'react';
 
-export default ()=> {
+export default (initialJoke)=> {
     const [state, setState] = useState({
         loading: false,
-        randomJoke: null,
-        error: null
+        randomJoke: initialJoke,
+        error: !Boolean(initialJoke) ? "Could not find a joke in that category" : null
     })
     
     const fetchRandomJoke = useCallback((category) => {
@@ -14,25 +15,22 @@ export default ()=> {
             loading: true,
             error: null
         })
-        return fetch(`/api/randomJoke${params}`).then((response)=>{
-            if (response.status !== 200){
-                return response.json().then((error)=>{
-                    setState({
-                        randomJoke: null,
-                        loading: false,
-                        error: error.message
-                    })
-                })
-            }
-            return response.json().then((data)=>{
-                setState({
-                    loading: false,
-                    randomJoke: data,
-                    error: null
-                })
+        return axios.get(`/api/randomJoke${params}`).then((response)=>{
+            setState({
+                ...state,
+                loading: false,
+                randomJoke: response.data,
+                error: null
+            })
+        }).catch((error)=>{
+            setState({
+                ...state,
+                loading: false,
+                error: "Could not find a joke in that category"
             })
         })
     })
+    
 
     return {
         fetchRandomJoke,
