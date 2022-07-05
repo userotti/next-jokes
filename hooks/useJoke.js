@@ -5,7 +5,7 @@ export default (initialJoke)=> {
     const [state, setState] = useState({
         loading: false,
         randomJoke: initialJoke,
-        error: null
+        error: !Boolean(initialJoke) ? "Could not find a joke in that category" : null
     })
     
     const fetchRandomJoke = useCallback((category) => {
@@ -26,7 +26,7 @@ export default (initialJoke)=> {
             setState({
                 ...state,
                 loading: false,
-                error: error.message
+                error: "Could not find a joke in that category"
             })
         })
     })

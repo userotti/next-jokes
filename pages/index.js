@@ -8,14 +8,15 @@ function HomePage({ categories }) {
          
         <h5>Select a category:</h5>
         {categories && <div className="list">
-            {categories.map((category, index)=>{
-                return <Category key={index} href={`/jokes/${category}`} category={category}/>
+            {categories.map((category)=>{
+                return <Category key={category} href={`/jokes/${category}`} category={category}/>
             })}
         </div>}
     </div>
 }
 
 export async function getServerSideProps() {
+    
     return {
       props: {
           categories: await axios.get(`${process.env.JOKES_API_BASE_URL}/categories`).then((response)=>{

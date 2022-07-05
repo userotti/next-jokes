@@ -9,7 +9,6 @@ function JokesCategory({initialJoke}) {
     const { category } = router.query
     const { randomJoke, fetchRandomJoke, error, loading } = useJoke(initialJoke)
 
-
     return error ? <div>
             <p>{error}</p>
             <Link href="/"><button> Return to home screen</button></Link>
@@ -24,12 +23,19 @@ function JokesCategory({initialJoke}) {
         </div> : null
 }
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps(context) {
+    const { category } = context.query;
+    
+    const initialJoke = await axios.get(`${process.env.JOKES_API_BASE_URL}/random?category=${category}`).then((response)=>{
+        return response.data
+    }).catch((e)=>{
+        console.log("Could not find initialJoke: ", e);
+        return null
+    })
+
     return {
       props: {
-          initialJoke: await axios.get(`${process.env.JOKES_API_BASE_URL}/random?caterogry=${req.url.split('/')[2]}`).then((response)=>{
-            return response.data
-          })
+          initialJoke
       },
     }
 }
