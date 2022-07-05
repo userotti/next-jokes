@@ -1,9 +1,10 @@
+const axios = require('axios');
+
 export default (req, res)=>{
-    return fetch(`https://api.chucknorris.io/jokes/categories`).then((response)=>{
-            return response.json().then((data)=>{
-                res.status(response.status)
-                return res.json(data)
-            })
-        })
-         
+    return axios.get(`https://api.chucknorris.io/jokes/categories`).then((response)=>{
+        return res.json(response.data)
+    }).catch((error)=>{
+        res.status(400)
+        return res.json(error.message)
+    })    
 }

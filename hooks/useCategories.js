@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useState, useCallback } from 'react';
 
 export default ()=> {
@@ -14,26 +15,22 @@ export default ()=> {
             categories: state.categories,
             error: null
         })
-        return fetch('api/categories').then((response)=>{
-            if (response.status !== 200){
-                return response.json().then((error)=>{
-                    setState({
-                        ...state,
-                        loading: false,
-                        error: error.message
-                    })
-                })
-            }
-            return response.json().then((data)=>{
-                setState({
-                    ...state,
-                    loading: false,
-                    categories: data,
-                    error: null
-                })
+        return axios.get('api/categories').then((response)=>{
+            setState({
+                ...state,
+                loading: false,
+                categories: response.data,
+                error: null
+            })
+        }).catch((error)=>{
+            setState({
+                ...state,
+                loading: false,
+                error: error.message
             })
         })
     })
+    
 
     return {
         fetchCategories,
