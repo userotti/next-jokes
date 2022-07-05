@@ -1,19 +1,12 @@
-import { useEffect } from 'react';
-import useCategories from '../hooks/useCategories';
+import axios from 'axios'
 import Category from '../components/Category';
 
-function HomePage() {
-
-    const {loading, categories, fetchCategories} = useCategories()
-
-    useEffect(()=>{
-        fetchCategories()
-    }, []);
+function HomePage({ categories }) {
 
     return <div>
         <h4>Welcome to Jokes App!</h4>
          
-        {loading ? <p> loading... </p> : <h5>Select a category:</h5>}
+        <h5>Select a category:</h5>
         {categories && <div className="list">
             {categories.map((category, index)=>{
                 return <Category key={index} href={`/jokes/${category}`} category={category}/>
@@ -21,5 +14,17 @@ function HomePage() {
         </div>}
     </div>
 }
+
+export async function getServerSideProps() {
+    return {
+      props: {
+          categories: await axios.get(`${process.env.JOKES_API_BASE_URL}/categories`).then((response)=>{
+            return response.data
+          })
+      },
+    }
+}
+
+
 
 export default HomePage

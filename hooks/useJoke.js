@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { useState, useCallback } from 'react';
 
-export default ()=> {
+export default (initialJoke)=> {
     const [state, setState] = useState({
         loading: false,
-        randomJoke: null,
+        randomJoke: initialJoke,
         error: null
     })
     

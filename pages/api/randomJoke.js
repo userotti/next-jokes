@@ -1,9 +1,9 @@
-const axios = require('axios')
+import axios from 'axios'
 
 export default (req, res)=>{
     const { category } = req.query
     const params = category ? `?category=${category}` : '';
-    return axios.get(`https://api.chucknorris.io/jokes/random${params}`).then((response)=>{
+    return axios.get(`${process.env.JOKES_API_BASE_URL}/random${params}`).then((response)=>{
         return res.json(response.data)
     }).catch((error)=>{
         res.status(400)
